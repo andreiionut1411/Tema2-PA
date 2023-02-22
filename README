@@ -1,0 +1,73 @@
+/* Ionescu Andrei Ionut - 321CB */
+
+							Tema 2
+
+	Problema Fortificatii:
+	Complexitate spatiala: O(m + n)
+	Complexitate temporala: O(n * log n + m * log m)
+	Pentru aceasta problema am pornit de la urmatoarea premisa: drumul minim pe
+care un barbar poate ajunge de la satul sau la capitala nu poate sa treaca prin alte
+orase barbare, deoarece oricum respectivul oras prin care trece va avea drumul mai
+scurt, asa ca pe el trebuie sa il incetinim. In plus, un barbar poate avea mai multe
+drumuri de acelasi cost pana la capitala. Prima idee ar fi sa facem Dijkstra, dar
+Dijkstra ne spune ca exista un drum de o lungime minima X, dar nu si cate astfel
+de drumuri exista. Asa ca am ales sa fac Dijkstra doar pe graful format numai
+din noduri ale imperiului, fara niciunul barbar. Practic, am eliminat din graf nodurile
+barabare si muchiile lor incidente. Astfel, avem o complexitate O(n*logn) deoarece
+graful obtinut este rar.  Dupa ce am facut acest prim pas, fiecare barbar isi ia fiecare
+vecin si adauga la drumul minim pana la vecin, drumul de la vecin la oras, si asa obtinem
+drumul minim pe care un barbar poate sa o ia pe calea cu vecinul respectiv. Toate
+aceste dimensiuni le adaugam intr-o lista, pe care apoi o vom sorta. Cum sunt maxim
+M muchii intre orasele barbare si restul lumtii, inseamna ca vom avea o complexitate
+de O(m*logm). Dupa aceasta sortare, vom "ridica" numere impreuna din sirul obtinut.
+Spre exemplu, daca avem sirul 1,2,3,3,4, atunci mai intai il facem pe 1 sa devina 2 si
+scadem 1 din numarul de fortificatii posibile. Apoi facem primele 2 sa devina 3, deodata,
+astfel obtinem 3,3,3,3,4. Apoi incercam sa facem primele 4 numere sa fie 4 si tot asa.
+Aceasta operatie are complexitate de O(m), fiind maxim m elemente in lista. La final,
+primul numar din lista va reprezenta cel mai mic timp in care un barbar poate ajunge in
+capitala.
+
+	Problema Beamdrone:
+	Complexitate temporala: O(n * m *n log (n * m))
+	Complexitate spatiala: O(n * m)
+	Pentru aceasta problema am folosit o structura de date care contine locatia unei
+celule (x, y), distanta care reprezinta numarul de curbe si directia pe care a intrat
+drona in celula respectiva. Vom avea 4 directii in care se va putea deplasa drona, plus
+una de start care va fi un wildcard deoarece drona la inceput poate merge in toate
+directiile. Avem si o matrice de distante. Vom folosi o coada de prioritati (min heap)
+ordonat dupa distante din care vom extrage pe rand elementul minim. Daca extragem
+un element din coada care are in matricea de distante o distanta mai mica decat cea
+pe care a venit, atunci il ignoram. Cum avem un min heap, inseamna ca prima data cand
+vom extrage din coada celula finala, inseamna ca acela este numarul minim de viraje pe
+care il poate face drona. Cand extragem o celula, ne uitam pe ce directie a venit, iar
+apoi pentru toate directiile verificam daca directia curenta este cea pe care a venit, caz
+in care pe acea directie va avea aceiasi distanta. Altfel, se incrementeaza cu 1 numarul de
+curbe, si daca acest nou numar este mai mare decat cel din matricea de distante, inseamna
+ca am gasit o ruta mai lunga catre acea celula, ceea ce nu ne intereseaza, asa ca nu o
+adaugam inapoi in coada. Astfel, desi in enunt ni se specifica, ca daca vrem sa ne
+intoarcem in celula anterioara ne va costa 2 rotiri, ceea ce eu nu am specificat in cod, dar
+conceptual drona nu ar avea motiv sa se intoarca de unde a venit pentru ca pur si
+simplu ar avea mai multe curbe fara un motiv bun. In cazul rezolvarii mele, daca se
+adauga 1 la distanta curenta si vrem sa ne intoarcem de unde am venit, atunci celula
+respectiva are un numar mai mic de viraje in matricea de distante decat aceasta noua,
+asa ca oricum o vom ignora, asa cum este si logic normal. Cum fiecare celula va fi
+adaugata in coada de maxim 4 ori, si avem n * m celule, iar introducerea in coada de prioritati
+si extragerea este O(log (n * m)), atunci vom avea complexitatea de O(n* m * log (n * m)).
+
+	Problema Curse:
+	Complexitate spatiala: O(m)
+	Complexitate temporala: O(a * n + m)
+	Pentru aceasta problema am creat un graf orientat fara costuri pentru care
+relatia de prioritate P(x) > P(y) data de fiecare constrangere obtinuta din cele A
+teste, avem o muchie din x in y. Pentru  fiecare nod din graf tinem minte si numarul
+de muchii incidente. Stim faptul ca nodul cu cea mai mare prioritate este radacina
+DAG-ului, deci nodul care nu are nicio muchie incidenta va fi nodul sursa. Din acest
+nod parcurgem toate nodurile adiacente si scadem fiecaruia cu 1 numarul de muchii
+incidente. Nodul care nu mai are muchii incidente inseamna ca implicit nu mai are
+alte noduri cu prioritate mai mare ca el, deci acest nod va fi urmatorul in care vom
+ajunge. Pentru acest DFS modificat avem in continuare complexitatea O(m + a) intrucat
+graful are M noduri si fiecare din cele A teste ne indica o muchie. Complexitatea
+totala a algoritmului este O(a * n + m) deoarece pentru fiecare pereche de 2 teste
+consecutive, trebuie sa parcurgem element cu element rezultatele pana cand difera,
+iar cum pe un rand avem N curse de antrenament si A teste, de aici iese si termenul
+a * n.
